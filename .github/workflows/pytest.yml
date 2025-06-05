@@ -1,0 +1,30 @@
+name: PySpark Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.10
+
+      - name: Install dependencies
+        run: |
+          pip install pyspark pytest pytest-html
+
+      - name: Run tests and generate HTML report
+        run: |
+          pytest --html=report.html --self-contained-html --report-title="CI Test Report"
+
+      - name: Upload test report as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-report
+          path: report.html
